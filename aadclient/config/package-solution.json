@@ -5,7 +5,13 @@
     "id": "a35e8d97-6dbd-4d9d-b382-643efb77d143",
     "version": "1.0.0.0",
     "includeClientSideAssets": true,
-    "isDomainIsolated": false
+    "skipFeatureDeployment": true,
+    "webApiPermissionRequests": [
+      {
+        "resource": "Microsoft Graph",
+        "scope": "User.ReadBasic.All"
+      }
+    ]
   },
   "paths": {
     "zippedPackage": "solution/graph-calls.sppkg"
