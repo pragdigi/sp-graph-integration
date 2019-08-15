@@ -1,3 +1,3 @@
 export interface INasaDisplayProps {
-  description: string;
+  apolloImage: any;
 }

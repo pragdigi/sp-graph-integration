@@ -10,6 +10,7 @@ import {
 import * as strings from 'NasaDisplayWebPartStrings';
 import NasaDisplay from './components/NasaDisplay';
 import { INasaDisplayProps } from './components/INasaDisplayProps';
+import { HttpClient, HttpClientResponse } from '@microsoft/sp-http';
 
 export interface INasaDisplayWebPartProps {
   description: string;
@@ -18,14 +19,32 @@ export interface INasaDisplayWebPartProps {
 export default class NasaDisplayWebPart extends BaseClientSideWebPart<INasaDisplayWebPartProps> {
 
   public render(): void {
-    const element: React.ReactElement<INasaDisplayProps > = React.createElement(
-      NasaDisplay,
-      {
-        description: this.properties.description
-      }
-    );
+    if (!this.renderedOnce) {
+      this._getApolloImage()
+        .then(response => {
+          const element: React.ReactElement<INasaDisplayProps> = React.createElement(
+            NasaDisplay,
+            {
+              apolloImage: response.collection.items[0]
+            }
+          );
+  
+          ReactDom.render(element, this.domElement);
+        });
+    }
+  }
 
-    ReactDom.render(element, this.domElement);
+  private _getApolloImage(): Promise<any> {
+    return this.context.httpClient.get(
+      `https://images-api.nasa.gov/search?q=Apollo%204&media_type=image`,
+      HttpClient.configurations.v1
+    )
+    .then((response: HttpClientResponse) => {
+      return response.json();
+    })
+    .then(jsonResponse => {
+      return jsonResponse;
+    }) as Promise<any>;
   }
 
   protected onDispose(): void {
