@@ -1,3 +1,5 @@
+import { IUserItem } from '../../../models/IUserItem';
+
 export interface IGraphCallsProps {
-  description: string;
+  userItems: IUserItem[];
 }

@@ -10,14 +10,25 @@ export default class GraphCalls extends React.Component<IGraphCallsProps, {}> {
         <div className={ styles.container }>
           <div className={ styles.row }>
             <div className={ styles.column }>
-              <span className={ styles.title }>Welcome to SharePoint!</span>
-              <p className={ styles.subTitle }>Customize SharePoint experiences using Web Parts.</p>
-              <p className={ styles.description }>{escape(this.props.description)}</p>
-              <a href="https://aka.ms/spfx" className={ styles.button }>
-                <span className={ styles.label }>Learn more</span>
-              </a>
+              <span className={ styles.title }>AadHttpClient Demo</span>
             </div>
           </div>
+
+          <div className={ styles.row }>
+            <div><strong>Mail:</strong></div>
+            <ul className={ styles.list }>
+              { this.props.userItems &&
+                this.props.userItems.map((user) =>
+                  <li key={ user.id } className={ styles.item }>
+                    <strong>ID:</strong> { user.id }<br />
+                    <strong>Email:</strong> { user.mail }<br />
+                    <strong>DisplayName:</strong> { user.displayName }
+                  </li>
+                )
+              }
+            </ul>
+          </div>
+
         </div>
       </div>
     );

@@ -10,6 +10,8 @@ import {
 import * as strings from 'GraphCallsWebPartStrings';
 import GraphCalls from './components/GraphCalls';
 import { IGraphCallsProps } from './components/IGraphCallsProps';
+import { IUserItem } from '../../models/IUserItem';
+import { AadHttpClient, HttpClientResponse } from '@microsoft/sp-http';
 
 export interface IGraphCallsWebPartProps {
   description: string;
@@ -18,15 +20,36 @@ export interface IGraphCallsWebPartProps {
 export default class GraphCallsWebPart extends BaseClientSideWebPart<IGraphCallsWebPartProps> {
 
   public render(): void {
-    const element: React.ReactElement<IGraphCallsProps > = React.createElement(
-      GraphCalls,
-      {
-        description: this.properties.description
-      }
-    );
-
-    ReactDom.render(element, this.domElement);
+    if (!this.renderedOnce) {
+      this._getUsers()
+        .then((results: IUserItem[]) => {
+          const element: React.ReactElement<IGraphCallsProps> = React.createElement(
+            GraphCalls,
+            {
+              userItems: results
+            }
+        );
+  
+        ReactDom.render(element, this.domElement);
+      });
+    }
   }
+  private _getUsers(): Promise<IUserItem[]> {
+    return new Promise<IUserItem[]>((resolve, reject) => {
+      this.context.aadHttpClientFactory
+        .getClient('https://graph.microsoft.com')
+        .then((aadClient: AadHttpClient) => {
+          const endpoint: string = 'https://graph.microsoft.com/v1.0/users?$top=10&$select=id,displayName,mail';
+          aadClient.get(endpoint, AadHttpClient.configurations.v1)
+            .then((rawResponse: HttpClientResponse) => {
+              return rawResponse.json();
+            })
+            .then((jsonResponse: any) => {
+              resolve(jsonResponse.value);
+            });
+        });
+      });
+  }  
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
