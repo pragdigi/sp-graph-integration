@@ -1,3 +1,4 @@
 ## graph-calls
 
-Using Azure Active Auth - http client to access data from Microsoft Graph
+Calling Data from Azure AD Protect API using httpclient
+Calling Data from Graph API using httpclient

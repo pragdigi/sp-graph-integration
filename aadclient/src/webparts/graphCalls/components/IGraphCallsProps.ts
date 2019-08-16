@@ -1,5 +1,9 @@
-import { IUserItem } from '../../../models/IUserItem';
+/* import { IUserItem } from '../../../models/IUserItem'; */
+import { MSGraphClient } from '@microsoft/sp-http';
+/* export interface IGraphCallsProps {
+  userItems: IUserItem[];
+} */
 
 export interface IGraphCallsProps {
-  userItems: IUserItem[];
+  graphClient: MSGraphClient;
 }

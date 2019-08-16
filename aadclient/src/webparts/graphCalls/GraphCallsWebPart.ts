@@ -12,6 +12,7 @@ import GraphCalls from './components/GraphCalls';
 import { IGraphCallsProps } from './components/IGraphCallsProps';
 import { IUserItem } from '../../models/IUserItem';
 import { AadHttpClient, HttpClientResponse } from '@microsoft/sp-http';
+import { MSGraphClient } from '@microsoft/sp-http';
 
 export interface IGraphCallsWebPartProps {
   description: string;
@@ -19,7 +20,7 @@ export interface IGraphCallsWebPartProps {
 
 export default class GraphCallsWebPart extends BaseClientSideWebPart<IGraphCallsWebPartProps> {
 
-  public render(): void {
+/*   public render(): void {
     if (!this.renderedOnce) {
       this._getUsers()
         .then((results: IUserItem[]) => {
@@ -33,7 +34,23 @@ export default class GraphCallsWebPart extends BaseClientSideWebPart<IGraphCalls
         ReactDom.render(element, this.domElement);
       });
     }
+
+  } */
+  public render(): void {
+    this.context.msGraphClientFactory.getClient()
+    .then((client: MSGraphClient): void => {
+      const element: React.ReactElement<IGraphCallsProps> = React.createElement(
+        GraphCalls,
+        {
+          graphClient: client
+        }
+      );
+    
+      ReactDom.render(element, this.domElement);
+    });
   }
+
+  
   private _getUsers(): Promise<IUserItem[]> {
     return new Promise<IUserItem[]>((resolve, reject) => {
       this.context.aadHttpClientFactory
